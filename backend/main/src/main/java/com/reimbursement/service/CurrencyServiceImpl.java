@@ -64,4 +64,4 @@ public class CurrencyServiceImpl implements CurrencyService {
 
         throw new CurrencyConversionException("Unexpected error during currency conversion");
     }
-}g
+}
