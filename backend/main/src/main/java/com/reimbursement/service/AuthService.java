@@ -1,12 +1,12 @@
 package com.reimbursement.service;
 
 //import com.reimbursement.dto.request.SignupRequest;
+import com.reimbursement.dto.request.SignupRequest;
 import com.reimbursement.entity.Company;
 import com.reimbursement.entity.User;
 import com.reimbursement.enums.Role;
 import com.reimbursement.repository.CompanyRepository;
 import com.reimbursement.repository.UserRepository;
-import com.reimbursement.service.AuthService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class AuthService  {
 
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
@@ -24,17 +24,17 @@ public class AuthServiceImpl implements AuthService {
     private final RestTemplate restTemplate;
 
     // Explicit Constructor Injection (No Lombok)
-    public AuthServiceImpl(UserRepository userRepository,
-                           CompanyRepository companyRepository,
-                           PasswordEncoder passwordEncoder,
-                           RestTemplate restTemplate) {
+    public AuthService(UserRepository userRepository,
+                       CompanyRepository companyRepository,
+                       PasswordEncoder passwordEncoder,
+                       RestTemplate restTemplate) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.passwordEncoder = passwordEncoder;
         this.restTemplate = restTemplate;
     }
 
-    @Override
+
     @Transactional
     public User registerCompanyAndAdmin(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
