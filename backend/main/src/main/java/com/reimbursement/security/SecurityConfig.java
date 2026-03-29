@@ -69,4 +69,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-}g
+}
