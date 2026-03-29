@@ -1,4 +1,4 @@
-package com.reimbursement.service.impl;
+package com.reimbursement.service;
 
 //import com.reimbursement.dto.request.SignupRequest;
 import com.reimbursement.entity.Company;
