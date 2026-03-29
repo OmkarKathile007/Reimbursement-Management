@@ -19,6 +19,9 @@ public class ExpenseResponse {
     private LocalDate expenseDate;
     private ExpenseStatus status;
     private LocalDateTime createdAt;
+    // Add these fields to your existing ExpenseResponse.java
+    private String employeeName;
+    private String employeeEmail;
 
     public ExpenseResponse(Expense expense) {
         this.id = expense.getId();
@@ -30,6 +33,8 @@ public class ExpenseResponse {
         this.expenseDate = expense.getExpenseDate();
         this.status = expense.getStatus();
         this.createdAt = expense.getCreatedAt();
+        this.employeeName = expense.getUser().getName();
+        this.employeeEmail = expense.getUser().getEmail();
     }
 
     // Getters
@@ -42,4 +47,6 @@ public class ExpenseResponse {
     public LocalDate getExpenseDate() { return expenseDate; }
     public ExpenseStatus getStatus() { return status; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+    public String getEmployeeName() { return employeeName; }
+    public String getEmployeeEmail() { return employeeEmail; }
 }

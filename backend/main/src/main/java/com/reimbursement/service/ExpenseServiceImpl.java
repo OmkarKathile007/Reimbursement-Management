@@ -1,4 +1,4 @@
-package com.reimbursement.service.impl;
+package com.reimbursement.service;
 
 import com.reimbursement.dto.request.CreateExpenseRequest;
 import com.reimbursement.dto.response.ExpenseResponse;
@@ -82,5 +82,45 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         // Map the Entity Page to a DTO Page securely
         return expensePage.map(ExpenseResponse::new);
+    }
+
+    @Override
+    public Page<ExpenseResponse> getTeamExpenses(int page, int size) {
+        User currentManager = getCurrentUser();
+
+        // Security: Ensure user has managerial rights
+        if (currentManager.getRole() == com.reimbursement.enums.Role.EMPLOYEE) {
+            throw new RuntimeException("Access denied: You do not have managerial privileges.");
+        }
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Expense> teamExpenses = expenseRepository.findTeamExpenses(currentManager.getId(), pageable);
+
+        return teamExpenses.map(ExpenseResponse::new);
+    }
+
+    @Override
+    @Transactional
+    public ExpenseResponse updateExpenseStatus(java.util.UUID expenseId, com.reimbursement.enums.ExpenseStatus newStatus) {
+        User currentManager = getCurrentUser();
+
+        Expense expense = expenseRepository.findById(expenseId)
+                .orElseThrow(() -> new RuntimeException("Expense not found"));
+
+        // Security Check: Does this expense belong to an employee managed by the current user?
+        User expenseOwner = expense.getUser();
+        if (expenseOwner.getManager() == null || !expenseOwner.getManager().getId().equals(currentManager.getId())) {
+            throw new RuntimeException("Access denied: You can only approve expenses for your direct reports.");
+        }
+
+        // Prevent updating already processed requests
+        if (expense.getStatus() != com.reimbursement.enums.ExpenseStatus.PENDING) {
+            throw new RuntimeException("Cannot update an expense that is already " + expense.getStatus());
+        }
+
+        expense.setStatus(newStatus);
+        Expense updatedExpense = expenseRepository.save(expense);
+
+        return new ExpenseResponse(updatedExpense);
     }
 }

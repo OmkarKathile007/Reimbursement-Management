@@ -37,4 +37,24 @@ public class ExpenseController {
         Page<ExpenseResponse> expenses = expenseService.getMyExpenses(page, size);
         return ResponseEntity.ok(new ApiResponse<>(true, "Expenses fetched successfully", expenses));
     }
+
+    @GetMapping("/team")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<Page<ExpenseResponse>>> getTeamExpenses(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ExpenseResponse> expenses = expenseService.getTeamExpenses(page, size);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Team expenses fetched successfully", expenses));
+    }
+
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    public ResponseEntity<ApiResponse<ExpenseResponse>> updateStatus(
+            @PathVariable java.util.UUID id,
+            @Valid @RequestBody com.reimbursement.dto.request.UpdateExpenseStatusRequest request) {
+
+        ExpenseResponse updated = expenseService.updateExpenseStatus(id, request.getStatus());
+        return ResponseEntity.ok(new ApiResponse<>(true, "Status updated to " + request.getStatus(), updated));
+    }
 }
