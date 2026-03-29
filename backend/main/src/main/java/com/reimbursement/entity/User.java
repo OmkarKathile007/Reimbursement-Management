@@ -3,6 +3,8 @@ package com.reimbursement.entity;
 import com.reimbursement.enums.Role;
 import jakarta.persistence.*;
 import java.util.UUID;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "users")
@@ -28,7 +30,9 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
+//    @Enumerated(EnumType.STRING)
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Role role;
 
     // Default Constructor (Required by JPA)
